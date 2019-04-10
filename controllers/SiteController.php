@@ -63,7 +63,8 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $users = User::find()->asArray()->all();
+        return $this->render('index', compact('users'));
     }
 
     /**
@@ -144,5 +145,18 @@ class SiteController extends Controller
         return $this->render('signup', [
             'model' => $model,
         ]);
+    }
+
+
+
+    public function actionAccount()
+    {
+        if(Yii::$app->user->isGuest){
+            return $this->redirect('/site/login');
+        }
+        else{
+            echo Yii::$app->user->id;
+        }
+        //return $this->render('index', compact('users'));
     }
 }
