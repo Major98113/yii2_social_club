@@ -5,6 +5,8 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
+    'language' => 'ru-RU',
+    'charset'=>'UTF-8',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -13,8 +15,8 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-            'cookieValidationKey' => 'GDFQE_Fj5nYyTP5-f5PgYO0fpe8CR0E_',
+            'baseUrl' => '',
+            'cookieValidationKey' => 'gfgfgf',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -43,14 +45,33 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'baseUrl' => 'http://yii2socialclub.loc/',
             'rules' => [
+                '/' => 'site/index',
+                '<action:login|logout|signup>' => 'site/<action>', // Статичные страницы
+                //остальные правила в своем классе urlManagerRule
+//                [
+//                    'class' => 'app\components\UrlManagerRule',
+//
+//                ],
             ],
         ],
-        */
+
+    ],
+    'modules' => [
+        'yii2images' => [
+            'class' => 'rico\yii2images\Module',
+            //be sure, that permissions ok
+            //if you cant avoid permission errors you have to create "images" folder in web root manually and set 777 permissions
+            'imagesStorePath' => 'img/store', //path to origin images
+            'imagesCachePath' => 'img/cache', //path to resized copies
+            'graphicsLibrary' => 'GD', //but really its better to use 'Imagick'
+            'placeHolderPath' => '@webroot/img/placeHolder.png', // if you want to get placeholder when image not exists, string will be processed by Yii::getAlias
+            'imageCompressionQuality' => 100, // Optional. Default value is 85.
+        ],
     ],
     'params' => $params,
 ];
