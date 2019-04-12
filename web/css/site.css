@@ -4,6 +4,7 @@ body {
     background-image: url("/img/background.jpg");
     background-size: cover;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 
 }
 
@@ -127,4 +128,8 @@ a.desc:after {
 
 .profile-window img{
     display: inline-block;
+}
+
+.profile-block{
+    margin-bottom: 30px;
 }

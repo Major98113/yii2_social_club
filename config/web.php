@@ -51,12 +51,8 @@ $config = [
             'baseUrl' => 'http://yii2socialclub.loc/',
             'rules' => [
                 '/' => 'site/index',
-                '<action:login|logout|signup>' => 'site/<action>', // Статичные страницы
-                //остальные правила в своем классе urlManagerRule
-//                [
-//                    'class' => 'app\components\UrlManagerRule',
-//
-//                ],
+                '<action:login|logout|signup|account>' => 'site/<action>', // Статичные страницы
+                'user/<id:\d+>'=>'user',
             ],
         ],
 
@@ -69,7 +65,8 @@ $config = [
             'imagesStorePath' => 'img/store', //path to origin images
             'imagesCachePath' => 'img/cache', //path to resized copies
             'graphicsLibrary' => 'GD', //but really its better to use 'Imagick'
-            'placeHolderPath' => '@webroot/img/placeHolder.png', // if you want to get placeholder when image not exists, string will be processed by Yii::getAlias
+            //'placeHolderPath' => '@webroot/img/avatar_miss.png', // if you want to get placeholder when image not exists, string will be processed by Yii::getAlias
+            'placeHolderPath' => '/img/avatar_miss.png',
             'imageCompressionQuality' => 100, // Optional. Default value is 85.
         ],
     ],

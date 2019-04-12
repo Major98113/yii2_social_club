@@ -11,6 +11,8 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\SignupForm;
 use app\models\User;
+use app\models\UserInfo;
+use yii\web\UploadedFile;
 
 class SiteController extends Controller
 {
@@ -64,6 +66,13 @@ class SiteController extends Controller
     public function actionIndex()
     {
         $users = User::find()->asArray()->all();
+
+        foreach ($users as $key =>$user):
+            $model = User::findOne($user['id']);
+            $image = $model->getImage();
+            $users[$key]['photo'] = $image->getPathToOrigin();
+        endforeach;
+
         return $this->render('index', compact('users'));
     }
 
@@ -101,33 +110,7 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    /**
-     * Displays contact page.
-     *
-     * @return Response|string
-     */
-    public function actionContact()
-    {
-        $model = new ContactForm();
-        if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
-            Yii::$app->session->setFlash('contactFormSubmitted');
 
-            return $this->refresh();
-        }
-        return $this->render('contact', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
 
 
     public function actionSignup()
@@ -154,9 +137,34 @@ class SiteController extends Controller
         if(Yii::$app->user->isGuest){
             return $this->redirect('/site/login');
         }
-        else{
-            echo Yii::$app->user->id;
+
+        $model = User::findOne(Yii::$app->user->getId());
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $model->image = UploadedFile::getInstance($model,'image');
+            if($model->image){
+                $model->removeImages();
+                $path = Yii::getAlias('@webroot/img/files').$model->image->baseName.".".$model->image->extension;
+                $model->image->saveAs($path);
+                $model->attachImage($path);
+            }
+            return $this->redirect('/site/account');
         }
-        //return $this->render('index', compact('users'));
+
+
+
+        if(!Yii::$app->user->isGuest){
+            $model = User::findOne(Yii::$app->user->id);
+            $image = $model->getImage();
+            $user = [
+                'id' => $model->getId(),
+                'username' => $model['username'],
+                'email' => $model['email'],
+                'photo' => $image->getPathToOrigin(),
+            ];
+
+            return $this->render('account', compact('user', 'model'));
+        }
     }
+
+
 }

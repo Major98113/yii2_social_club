@@ -21,15 +21,22 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            'image' => [
+                'class' => 'rico\yii2images\behaviors\ImageBehave',
+            ],
+            TimestampBehavior::className()
         ];
     }
+
+    public $image;
 
     public function rules()
     {
         return [
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_DELETED]],
+            [['facts'], 'string'],
+            [['born'], 'safe'],
         ];
     }
 
@@ -117,5 +124,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
+
+
 
 }
